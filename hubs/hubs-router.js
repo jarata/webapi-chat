@@ -38,7 +38,7 @@ router.get('/:id/messages', async (req, res) => {
     try {
         const messages = await Hubs.findHubMessages(req.params.id);
         if (messages.length > 0) {
-            res.status(200).json(messages)
+            return res.status(200).json(messages)
         } else {
             res.status(404).json({
                 message: "No messages for this hub"
@@ -47,7 +47,7 @@ router.get('/:id/messages', async (req, res) => {
     } catch(error) {
         console.log(error);
         res.status(500).json({
-            messages: "Error messages"
+            messages: "Error getting messages"
         })
     }
 });
@@ -64,6 +64,37 @@ router.post('/', async (req, res) => {
         });
     }
 });
+
+// Student + Instructor solution
+router.post('/:id/messages', async (req, res) => {
+    const messageInfo = {
+        ...req.body,
+        hub_id: req.params.id
+    };
+    try {
+        const message = await Hubs.addMessage(messageInfo);
+        res.status(201).json(message);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: "Error adding the message"
+        })
+    }
+});
+
+// router.post('/:id', async (req, res) => {
+//     const hub = req.body;
+//     Hubs
+//         .add(hub)
+//         .then(hub => {
+//             res.status(201).json(hub);
+//         })
+//         .catch(error => {
+//             res.status(404).json({
+//                 message: 'Add failed'
+//             })
+//         })
+// });
 
 router.delete('/:id', async (req, res) => {
     try {
