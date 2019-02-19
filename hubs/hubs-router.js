@@ -34,6 +34,24 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+router.get('/:id/messages', async (req, res) => {
+    try {
+        const messages = await Hubs.findHubMessages(req.params.id);
+        if (messages.length > 0) {
+            res.status(200).json(messages)
+        } else {
+            res.status(404).json({
+                message: "No messages for this hub"
+            })
+        }
+    } catch(error) {
+        console.log(error);
+        res.status(500).json({
+            messages: "Error messages"
+        })
+    }
+});
+
 router.post('/', async (req, res) => {
     try {
         const hub = await Hubs.add(req.body);
